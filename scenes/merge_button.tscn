@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1sie1hd6jcs5"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_wuvsi"]
+device = -1
+shift_pressed = true
+keycode = 86
+unicode = 86
+
+[sub_resource type="Shortcut" id="Shortcut_o4wmv"]
+events = [SubResource("InputEventKey_wuvsi")]
+
+[node name="MergeButton" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+tooltip_text = "A - B and B removed"
+shortcut = SubResource("Shortcut_o4wmv")
+text = "M"

@@ -32,7 +32,8 @@ static var selections: Array[Node]
 ## Just buttons to show
 var BUTTONS: Array[EditorCBaseButton] = [
 	EditorCKnifeButton.new(),
-	EditorCCutButton.new()
+	EditorCCutButton.new(),
+	EditorCMergeButton.new()
 ]
 
 func _init() -> void:

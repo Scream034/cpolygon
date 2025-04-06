@@ -3,10 +3,10 @@
 [sub_resource type="InputEventKey" id="InputEventKey_wuvsi"]
 device = -1
 shift_pressed = true
+ctrl_pressed = true
 keycode = 67
-unicode = 67
 
-[sub_resource type="Shortcut" id="Shortcut_jk6u7"]
+[sub_resource type="Shortcut" id="Shortcut_t46gq"]
 events = [SubResource("InputEventKey_wuvsi")]
 
 [node name="CutButton" type="Button"]
@@ -16,5 +16,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 tooltip_text = "A - B and B saved"
-shortcut = SubResource("Shortcut_jk6u7")
+shortcut = SubResource("Shortcut_t46gq")
 text = "✂️"

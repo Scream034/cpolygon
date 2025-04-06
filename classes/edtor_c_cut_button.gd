@@ -63,7 +63,7 @@ func _apply_cut(path: String, clipped_data: EditorPolygon2DUndoRedoData) -> void
 		return
 
 	# just apply intersection
-	clipped_data.result = CGeometry2D.intersection(target.polygon, clipped_data.original_polygon)
+	clipped_data.result = Geometry2D.intersect_polygons(target.polygon, clipped_data.original_polygon)
 	target.polygon = clipped_data.result.pop_front()
 
 	EditorPluginCPolygon.editor_selection.clear()
