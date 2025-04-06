@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpvbjgen4jb6c"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_wuvsi"]
+device = -1
+shift_pressed = true
+keycode = 67
+unicode = 67
+
+[sub_resource type="Shortcut" id="Shortcut_jk6u7"]
+events = [SubResource("InputEventKey_wuvsi")]
+
+[node name="CutButton" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+tooltip_text = "A - B and B saved"
+shortcut = SubResource("Shortcut_jk6u7")
+text = "✂️"
