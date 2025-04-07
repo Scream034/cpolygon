@@ -76,5 +76,4 @@ func _undo_cut(path: String, target_polygon: PackedVector2Array, clipped_data: E
 		for node in clipped_data._result_nodes:
 			EditorPluginCPolygon.l("Remove clipped node: ", node.name)
 			node.get_parent().remove_child(node)
-			node.owner = null
 			node.queue_free()

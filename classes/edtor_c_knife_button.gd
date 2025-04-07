@@ -106,9 +106,9 @@ static func _apply_clip(target: Polygon2D, clipped_data: EditorPolygon2DUndoRedo
 	if first == null:
 		push_error("Failed to apply knife: no result")
 		return
-	else:
-		EditorPluginCPolygon.l("First result: ", first)
-		target.polygon = first
+
+	EditorPluginCPolygon.l("First result: ", first)
+	target.polygon = first
 
 	EditorPluginCPolygon.editor_selection.clear()
 
@@ -117,7 +117,6 @@ static func _apply_clip(target: Polygon2D, clipped_data: EditorPolygon2DUndoRedo
 	EditorPluginCPolygon.l("Clipped data size: ", clipped_data_size, " ", len(clipped_data.result))
 	if (clipped_data_size > 0):
 		clipped_data._result_nodes = []
-		var p_parent = target.get_parent().get_parent()
 		var instance = target.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D
 
 		# remove children
@@ -134,7 +133,7 @@ static func _apply_clip(target: Polygon2D, clipped_data: EditorPolygon2DUndoRedo
 			node.name = target.name + "_" + str(index)
 
 			target.add_child(node)
-			node.owner = p_parent
+			node.owner = target.owner
 			clipped_data._result_nodes.push_back(node)
 
 			EditorPluginCPolygon.editor_selection.add_node(node)

@@ -4,7 +4,10 @@ class_name EditorPolygon2DUndoRedoData
 var path: NodePath
 var original_polygon: PackedVector2Array
 var result: Array[PackedVector2Array]
+
 var _result_nodes: Array[Node]
+
+var _older_node: Polygon2D = null
 
 func _init(node: Polygon2D) -> void:
 	path = node.get_path()

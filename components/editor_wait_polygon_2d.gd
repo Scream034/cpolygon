@@ -31,7 +31,7 @@ func create() -> bool:
 
 	# Add to scene tree
 	parent.add_child(node)
-	node.set_owner(parent.get_parent().get_parent())
+	node.set_owner(parent.owner)
 	return true
 
 ## Returns the parent node of the node
