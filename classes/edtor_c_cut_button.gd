@@ -62,49 +62,7 @@ func _apply_cut(path: String, clipped_data: EditorPolygon2DUndoRedoData) -> void
 		push_warning("Cut button: Failed to apply cut")
 		return
 
-	# just apply intersection
-	clipped_data.result = Geometry2D.intersect_polygons(target.polygon, clipped_data.original_polygon)
-	target.polygon = clipped_data.result.pop_front()
-
-	EditorPluginCPolygon.editor_selection.clear()
-
-	# try to create clipped nodes (when multiple intersection)
-	var clipped_data_size = clipped_data.result.size()
-	EditorPluginCPolygon.l("Clipped data size: ", clipped_data_size, " ", len(clipped_data.result))
-	if (clipped_data_size > 0):
-		clipped_data._result_nodes = []
-
-		var p_parent = target.get_parent().get_parent() # for add clipped nodes to parent
-		var instance = target.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D # for create clipped nodes
-
-		# Remove clipped node from target
-		print(clipped_data.path.get_name(clipped_data.path.get_name_count() - 2), target.name)
-		if clipped_data.path.get_name(clipped_data.path.get_name_count() - 2) == target.name:
-			var clipped = EditorPluginCPolygon.root.get_node(clipped_data.path) as Polygon2D
-			var child = instance.get_node(target.get_path_to(clipped))
-			instance.remove_child(child)
-			child.queue_free()
-
-			# free
-			child = null
-			clipped = null
-
-		for index in clipped_data_size:
-			var polygon = clipped_data.result.get(index)
-			var node = instance.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D
-			node.polygon = polygon
-			node.global_position = target.global_position
-			node.name = target.name + "_" + str(index)
-
-			target.add_child(node)
-			node.owner = p_parent
-			clipped_data._result_nodes.push_back(node)
-
-			EditorPluginCPolygon.editor_selection.add_node(node)
-			EditorPluginCPolygon.l("Created clipped node: ", node.name, " [", polygon, "]")
-
-	EditorPluginCPolygon.editor_selection.add_node(target)
-
+	EditorCKnifeButton._apply_clip(target, clipped_data)
 
 func _undo_cut(path: String, target_polygon: PackedVector2Array, clipped_data: EditorPolygon2DUndoRedoData) -> void:
 	var target = EditorPluginCPolygon.root.get_node_or_null(path) as Polygon2D

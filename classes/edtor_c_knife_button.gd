@@ -42,9 +42,7 @@ func _on_button_pressed() -> void:
 func knife(target: Polygon2D) -> void:
 	EditorPluginCPolygon.l("Knife polygon")
 
-	# for true knife we need to have same position
-	if clipped_node.global_position != target.global_position:
-		clipped_node.global_position = target.global_position
+	clipped_node.global_position = target.global_position
 
 	var target_path = target.get_path()
 	var clipped_data = EditorPolygon2DUndoRedoData.new(clipped_node)
@@ -60,9 +58,12 @@ func _apply_knife(path: String, clipped_data: EditorPolygon2DUndoRedoData) -> vo
 		push_error("Failed to apply knife: not found target")
 		return
 
+	EditorPluginCPolygon.l("Target node is avaliable:", target.name, target.global_position);
+
 	# if clipped is avaliable then we can clear and remove it
 	var clipped = EditorPluginCPolygon.root.get_node_or_null(clipped_data.path) as Polygon2D
 	if is_instance_valid(clipped):
+		EditorPluginCPolygon.l("Clipped node is avaliable:", clipped.name, clipped.global_position);
 		var id = EditorPluginCPolygon.editor_undo_redo.get_object_history_id(clipped)
 		if id == 0:
 			push_error(clipped.name + " not found in history")
@@ -79,41 +80,7 @@ func _apply_knife(path: String, clipped_data: EditorPolygon2DUndoRedoData) -> vo
 		clipped.owner = null
 		clipped.queue_free()
 
-	# just apply knife
-	clipped_data.result = Geometry2D.intersect_polygons(target.polygon, clipped_data.original_polygon)
-	target.polygon = clipped_data.result.pop_front()
-
-	EditorPluginCPolygon.editor_selection.clear()
-
-	# try to create clipped nodes (when multiple knife)
-	var clipped_data_size = clipped_data.result.size()
-	EditorPluginCPolygon.l("Clipped data size: ", clipped_data_size, " ", len(clipped_data.result))
-	if (clipped_data_size > 0):
-		clipped_data._result_nodes = []
-		var p_parent = target.get_parent().get_parent()
-		var instance = target.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D
-
-		# remove children
-		for child in instance.get_children():
-			instance.remove_child(child)
-			child = null
-			child.queue_free()
-
-		for index in clipped_data_size:
-			var polygon = clipped_data.result.get(index)
-			var node = instance.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D
-			node.polygon = polygon
-			node.global_position = target.global_position
-			node.name = target.name + "_" + str(index)
-
-			target.add_child(node)
-			node.owner = p_parent
-			clipped_data._result_nodes.push_back(node)
-
-			EditorPluginCPolygon.editor_selection.add_node(node)
-			EditorPluginCPolygon.l("Created clipped node: ", node.name, " [", polygon, "]")
-
-	EditorPluginCPolygon.editor_selection.add_node(target)
+	_apply_clip(target, clipped_data)
 
 func _undo_knife(path: String, target_polygon: PackedVector2Array, clipped_data: EditorPolygon2DUndoRedoData) -> void:
 	var target = EditorPluginCPolygon.root.get_node_or_null(path) as Polygon2D
@@ -130,3 +97,47 @@ func _undo_knife(path: String, target_polygon: PackedVector2Array, clipped_data:
 			node.get_parent().remove_child(node)
 			node.owner = null
 			node.queue_free()
+
+## Apply knife (auto create polygon after clipping)
+static func _apply_clip(target: Polygon2D, clipped_data: EditorPolygon2DUndoRedoData) -> void:
+	# just apply knife
+	clipped_data.result = Geometry2D.clip_polygons(target.polygon, clipped_data.original_polygon)
+	var first = clipped_data.result.pop_front()
+	if first == null:
+		push_error("Failed to apply knife: no result")
+		return
+	else:
+		EditorPluginCPolygon.l("First result: ", first)
+		target.polygon = first
+
+	EditorPluginCPolygon.editor_selection.clear()
+
+	# try to create clipped nodes (when multiple knife)
+	var clipped_data_size = clipped_data.result.size()
+	EditorPluginCPolygon.l("Clipped data size: ", clipped_data_size, " ", len(clipped_data.result))
+	if (clipped_data_size > 0):
+		clipped_data._result_nodes = []
+		var p_parent = target.get_parent().get_parent()
+		var instance = target.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D
+
+		# remove children
+		for child in instance.get_children():
+			instance.remove_child(child)
+			child.queue_free()
+			child = null
+
+		for index in clipped_data_size:
+			var polygon = clipped_data.result.get(index)
+			var node = instance.duplicate(Node.DUPLICATE_USE_INSTANTIATION) as Polygon2D
+			node.polygon = polygon
+			node.global_position = target.global_position
+			node.name = target.name + "_" + str(index)
+
+			target.add_child(node)
+			node.owner = p_parent
+			clipped_data._result_nodes.push_back(node)
+
+			EditorPluginCPolygon.editor_selection.add_node(node)
+			EditorPluginCPolygon.l("Created clipped node: ", node.name, " [", polygon, "]")
+
+	EditorPluginCPolygon.editor_selection.add_node(target)
