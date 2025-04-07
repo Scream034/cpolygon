@@ -39,7 +39,6 @@ CPolygon is a Godot Engine plugin that provides tools to simplify polygon editin
   4.  **Deselect** the new polygon. The "Knife" operation (A ∩ B) will be applied to the target polygon (A), and polygon (B) will be removed.
 
       <img src="preview/show_knife_a.gif" alt="Knife Operation A - Wait Polygon" width="400"/>
-      <img src="preview/show_knife_undo_redo_a.gif" alt="Knife Operation with Undo/Redo" width="400"/>
 
 - **Merge (Simple A+B):** The "Merge" operation allows you to combine two polygons (A and B) into one. This operation is visualized as **A + B**.
 
@@ -52,6 +51,7 @@ CPolygon is a Godot Engine plugin that provides tools to simplify polygon editin
   <img src="preview/show_merge_a.gif" alt="Merge Operation A + B" width="400"/>
 
 - **Undo/Redo Support:** All operations are fully integrated with Godot's Undo/Redo system. You can easily undo and redo polygon modifications.
+<img src="preview/show_knife_undo_redo_a.gif" alt="Knife Operation with Undo/Redo" width="400"/>
 
 - **Cancel**: You can cancel an operation by remove the polygon that is being created or modified.
 
